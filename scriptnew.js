@@ -18,8 +18,10 @@ class Tree{
         this.rc = rc.bind(this)
         this.rc2 = rc2.bind(this)
         this.undo = undo.bind(this)
+        
     }
     run(tree){
+        filTxt()
         const width = window.innerWidth;
 		const height = window.innerHeight / 2;
         const radius = 40;

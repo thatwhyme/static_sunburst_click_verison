@@ -10,6 +10,8 @@
 <script src="https://d3js.org/d3-selection.v1.min.js"></script>
 <script src="./d3-drag.v1.min.js"></script>
 <script src="https://d3js.org/d3-transition.v1.min.js"></script>
+<!-- <script src="./scriptnew.js"></script>
+<script src="./luoji.js"></script> -->
 <title>test</title>
 <style>
     body, html, #body{
@@ -73,8 +75,6 @@
     window.οnresize=function(){
         fixedDiv();
     }
-
-    
     </script>
 
 </head>
@@ -86,7 +86,11 @@
         <p id = "sequencetxt" style="display:block;font-size:x-small"></p>
     </div>
     <div id="div2" style="height:4%;text-align:center">
-        <button  id="demo" style="width: 100px;height:50px;background-color: #7ED321;border-radius:10px;border:1px solid blue" onclick="UndoFunction()">Undo</button >
+        <tr>
+        <td><button  id="demo" style="width: 100px;height:50px;background-color: hsl(202, 73%, 48%);border-radius:10px;border:1px solid blue" onclick="UndoFunction()">Undo</button >
+        </td>
+        <td><div id = "NUM"></div></td>
+        </tr>
     </div>
     <div id="body" style="height:100%;position:center">
         <svg id="partitionSVG"></svg>

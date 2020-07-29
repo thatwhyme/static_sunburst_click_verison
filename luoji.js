@@ -159,6 +159,17 @@ const single = {
     }
 }
 
+function filTxt(){
+    leftNow = Max_Choice_Num - cur_red_choice_num
+    if( leftNow >1 ){
+        document.getElementById("NUM").innerHTML = "you still have "+leftNow+" choices";
+    }else if(leftNow == 1){
+        document.getElementById("NUM").innerHTML = "you still have "+leftNow+" choice";
+    }else{
+        document.getElementById("NUM").innerHTML = "you have no choice now";
+    }
+}
+
 
 function onlclick(d) {   //left click  for  red player
     console.log('running onlclick for red player：' + cur_red_choice_num)
@@ -172,6 +183,9 @@ function onlclick(d) {   //left click  for  red player
         
     cur_red_choice_num += 1   //the num of nodes that red player has chosen at this moment
     
+    // for showing the leaves left
+    filTxt()
+
     findNodeTo (tree, d.data.label, node => {  //find this node and change its color to red
         node.firstStage = true
         node.normal = false
@@ -287,6 +301,7 @@ function UndoFunction(d){
             FLAGPlayer = 0;
         }
         cur_red_choice_num -= 1
+        filTxt()
         console.log("cur_red_choice_num:"+cur_red_choice_num)
 
     }else if(tmps.length == 3){
@@ -363,3 +378,4 @@ function UndoFunction(d){
 
 const treemap = new Tree(onlclick, onrclick,onrclick2,UndoFunction)  
 treemap.run(tree)
+
