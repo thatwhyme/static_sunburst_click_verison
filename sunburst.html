@@ -1,0 +1,97 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="UTF-8">
+<!-- <script src="./d3.v5.min.js"></script> -->
+<script src="https://d3js.org/d3.v5.min.js"></script>
+<script src = "https://d3js.org/d3-drag.v1.min.js"></script>
+<script src="./d3-dispatch.v1.min.js"></script>
+<!-- <script src="./d3-selection.v1.min.js"></script> -->
+<script src="https://d3js.org/d3-selection.v1.min.js"></script>
+<script src="./d3-drag.v1.min.js"></script>
+<script src="https://d3js.org/d3-transition.v1.min.js"></script>
+<title>test</title>
+<style>
+    body, html, #body{
+        width: 100%;
+        height: 100%;
+    }
+    .arrow{
+        display: flex;
+        justify-content: left;
+        position: absolute;
+        top: 5px;
+    }
+    .arrow-item{
+        width: 80px;
+        height: 40px;
+        background-color: red;
+        position: relative;
+        text-align: center;
+        line-height: 40px;
+        text-indent: 10px;
+    }
+    .arrow-item + .arrow-item{
+        margin-left: 25px;
+    }
+    .arrow-item + .arrow-item::before{
+        position: absolute;
+        left: -20px;
+        top:0;
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        border: 20px solid;
+        border-color: inherit;
+        border-left-color: transparent;
+    }
+    .arrow-item::after{
+        position: absolute;
+        right: -40px;
+        top:0;
+        content: '';
+        display: block;
+        width: 0;
+        height: 0;
+        border: 20px solid transparent;
+        border-left-color: inherit;
+    }
+</style>
+
+<script>
+    function fixedDiv(){
+        var d1 = document.getElementById("div1");
+        var d2 = document.getElementById("body");
+        var h = window.document.body.clientHeight;
+        d1.style.height=h*0.01;
+        d2.style.height=h*0.92;
+    }
+    window.οnlοad=function(){
+        fixedDiv();
+    }
+    window.οnresize=function(){
+        fixedDiv();
+    }
+
+    
+    </script>
+
+</head>
+
+<body>
+    <div class="arrow"> 
+    </div>
+    <div id="div1" style="height:10%;"> 
+        <p id = "sequencetxt" style="display:block;font-size:x-small"></p>
+    </div>
+    <div id="div2" style="height:4%;text-align:center">
+        <button  id="demo" style="width: 100px;height:50px;background-color: #7ED321;border-radius:10px;border:1px solid blue" onclick="UndoFunction()">Undo</button >
+    </div>
+    <div id="body" style="height:100%;position:center">
+        <svg id="partitionSVG"></svg>
+    </div>
+    <script src="./scriptnew.js"></script>
+    <script src="./luoji.js"></script>
+</body>
+</html>
