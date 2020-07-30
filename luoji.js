@@ -50,7 +50,7 @@ let endLabel = 2 * beginLabel;
 let Recording = []; //This is used to record every step
 
 // Math.floor(Math.pow(2,depth-1)*0.422)
-const Max_Choice_Num = 3 // this is a constraint which refers that the max num nodes that Red player can choose
+const Max_Choice_Num = 5 // this is a constraint which refers that the max num nodes that Red player can choose
 console.log("Max_Choice_Num: "+Max_Choice_Num)
 let cur_red_choice_num = 0  //the num of nodes that red player has chosen at this moment
 
@@ -303,7 +303,8 @@ function UndoFunction(d){
         cur_red_choice_num -= 1
         filTxt()
         console.log("cur_red_choice_num:"+cur_red_choice_num)
-
+        console.log(Recording)
+        console.log("undo success:"+tmps)
     }else if(tmps.length == 3){
         findNodeTo (tree, tmps[2], node => {  
             node.firstStage = true
@@ -327,10 +328,10 @@ function UndoFunction(d){
                 }
             })
         }
-
         unresolved = 0
         prepared = 0
         dragging = 0
+        console.log("destination_Node:"+destination_Node)
         console.log(Recording)
         console.log('undo success :'+tmps)
 
@@ -367,7 +368,9 @@ function UndoFunction(d){
         unresolved = 0
         prepared = 0
         dragging = 0
+        console.log("destination_Node:"+destination_Node)
         destination_Node = ""
+        console.log("destination_Node:"+destination_Node)
         console.log(Recording)
         console.log('undo success :'+tmps)
     }else{

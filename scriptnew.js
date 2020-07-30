@@ -4,7 +4,7 @@ let dragging = 0  //It is used to indicate that dragging is in progress or not i
 let prepared = 0
 let unresolved = 0  //Indicates that there are currently unfinished operations.
 let destination_Node = ""
-
+let justStop = 0
 var tooltip = d3.select("#body")
     .append("div")
     .attr("class", "tooltip")
@@ -18,7 +18,6 @@ class Tree{
         this.rc = rc.bind(this)
         this.rc2 = rc2.bind(this)
         this.undo = undo.bind(this)
-        
     }
     run(tree){
         filTxt()
@@ -94,6 +93,7 @@ class Tree{
                                 var label = ""+i;  //change the i to a string
                                 findNodeTo(tree, label, node => {
                                     if(node.normal){
+                                        node.predictcolor = false
                                         if(single.check(label,redNowLabel)){
                                             node.predictcolor = true
                                             node.normal = false
@@ -101,12 +101,57 @@ class Tree{
                                     }
                                 })
                             }
-                            // 如果有一个只需要改变颜色的函数就好了，而不需要重新绘制这个图形。
                             treemap.run(tree)
                         }
                     }
                 })
                 .on("mouseover", d => {
+                    
+                    if(d.data.isLeaf && d.data.predictcolor && dragging == 0 && justStop == 1){
+                        console.log("in mouseover + I get your label:"+d.data.label)
+                        justStop = 0
+                        destination_Node = d.data.label
+                        //remove all the legit positions
+                        for(var i = beginLabel; i < endLabel+1; i++){
+                            var label = ""+i; //change the i to a string
+                            findNodeTo(tree, label, node => {
+                                if(node.predictcolor){
+                                    node.blue = false
+                                    node.firstStage = false
+                                    node.chosen = false
+                                    node.red_end = false
+                                    node.normal = true
+                                    node.predictcolor = false
+                                }
+                            })
+                        }
+                        this.rc2(destination_Node) 
+
+                        console.log("")
+                    }else{
+                        console.log("in mouseover123 + I do not get your label")
+                        console.log("in mouseover123 + d.data.predictcolor:" + d.data.predictcolor)
+                        console.log("in mouseover123 + d.data.isLeaf:" + d.data.isLeaf )
+                        console.log("in mouseover123 + dragging" + dragging)
+                        console.log("")
+                    }
+
+
+                    // if( dragging == 0 && justStop == 1 ){
+                    //     justStop = 0
+                    //     if(destination_Node !=""){
+                    //         this.rc2(destination_Node) 
+                    //         //remove all the legit position's coloring
+                            
+                    //     }else{
+                    //         console.log("why this destination_Node is empty?")
+                    //         console.log("d.data.isLeaf:" + d.data.isLeaf )
+                    //         console.log("d.data.predictcolor:" + d.data.predictcolor)
+                    //         console.log("dragging" + dragging)
+                    //     }
+                    //     // console.log("justStop:" + justStop)
+                    // }
+
                     d3.selectAll("path")
                     .transition()
                     .duration(300)
@@ -139,75 +184,47 @@ class Tree{
                     .duration(300)
                     .style("opacity", 0.7);
 
-                    if(d.data.isLeaf && d.data.predictcolor ){
-                        destination_Node = d.data.label
-                    }
                     tooltip.html(d.data.label)
                     return tooltip.transition()
-                      .duration(300)
-                      .style("opacity",1)
+                                    .duration(300)
+                                    .style("opacity",1)
                 })
                 .on("mousemove", function(d) {
                     return tooltip
                     .transition()
-                      .duration(300)
-                      .style("top", (d3.event.pageY+0)+"px")//+10
-                      .style("left", (d3.event.pageX+0)+"px");//+10
-                  })
-
+                    .duration(300)
+                    .style("top", (d3.event.pageY+0)+"px")//+10
+                    .style("left", (d3.event.pageX+0)+"px");//+10
+                })
                 .call(
                     d3.drag()  
                     .filter(function(d) { // The filter function here ensures that only leaf nodes in firststage can be dragged
                         if(d.data.chosen){
                             return d.data.isLeaf
-                            // if (unresolved == 0){
-                            //     return d.data.isLeaf && d.data.firstStage;
-                            // }else if(unresolved == 1){
-                            //     return d.data.isLeaf && d.data.chosen;
-                            // }
                         }else{
                             return false
                         }
                     })
                     .on('start', (d) => {
                         dragging = 1; //the dragging begins
-                        // redNowLabel = d.data.label
+                        justStop = 0;
                         const { x, y } = d3.event
-                        // console.log('dragging begins:', x, y);
                         window.dx = 0;
                         window.dy = 0;
                     })
                     .on('end', (d) => {
                         dragging = 0; //dragging ends
                         const { x, y } = d3.event
-                        // console.log('dragging ends:', x, y);
+                        justStop = 1
                         console.log('beginlabel:'+d.data.label) 
-                        console.log('destination_Node:'+destination_Node)
-                        // console.log('there should call Blue_step_2')
-                        if(destination_Node !=""){
-                            this.rc2(destination_Node) 
-                            //remove all the legit position's coloring
-                            for(var i = beginLabel; i < endLabel+1; i++){
-                                var label = ""+i; //change the i to a string
-                                findNodeTo(tree, label, node => {
-                                    if(node.predictcolor){
-                                        node.blue = false
-                                        node.firstStage = false
-                                        node.chosen = false
-                                        node.red_end = false
-                                        node.normal = true
-                                        node.predictcolor = false
-                                    }
-                                })
-                            }
-                        }
-                        // else{  //如果他还是空呢
-
-                        // }
+                        console.log('darg end event destination_Node:'+destination_Node)
+                        
+                        
                         treemap.run(tree)
                     })
                     .on('drag', draged)
                 )
+
                 .on("mouseout", function(d){
                     var demoP=document.getElementById("sequencetxt");
                     demoP.innerHTML = "";
