@@ -13,11 +13,12 @@ var tooltip = d3.select("#body")
 
 
 class Tree{
-    constructor(lc, rc, rc2,undo){
+    constructor(lc, rc, rc2,undo,oneset){
         this.lc = lc.bind(this)
         this.rc = rc.bind(this)
         this.rc2 = rc2.bind(this)
         this.undo = undo.bind(this)
+        this.oneset = oneset.bind(this)
     }
     run(tree){
         filTxt()
@@ -69,10 +70,8 @@ class Tree{
                         if (d.data.isLeaf) {
                             this.lc(d)
                         }
-                        // console.log("why do you stay here")
                         d3.event.preventDefault()
-                    }else if(FLAGPlayer == 1 && d.data.isLeaf && d.data.firstStage){//if (d.data.isLeaf && d.data.firstStage) 
-                        console.log('here'+FLAGPlayer)
+                    }else if(unresolved ==0 && FLAGPlayer == 1 && d.data.isLeaf && d.data.firstStage){//if (d.data.isLeaf && d.data.firstStage) 
                         {
                             d.data.chosen = true
                             d.data.firstStage = false
@@ -106,9 +105,7 @@ class Tree{
                     }
                 })
                 .on("mouseover", d => {
-                    
                     if(d.data.isLeaf && d.data.predictcolor && dragging == 0 && justStop == 1){
-                        console.log("in mouseover + I get your label:"+d.data.label)
                         justStop = 0
                         destination_Node = d.data.label
                         //remove all the legit positions
@@ -127,30 +124,7 @@ class Tree{
                         }
                         this.rc2(destination_Node) 
 
-                        console.log("")
-                    }else{
-                        console.log("in mouseover123 + I do not get your label")
-                        console.log("in mouseover123 + d.data.predictcolor:" + d.data.predictcolor)
-                        console.log("in mouseover123 + d.data.isLeaf:" + d.data.isLeaf )
-                        console.log("in mouseover123 + dragging" + dragging)
-                        console.log("")
                     }
-
-
-                    // if( dragging == 0 && justStop == 1 ){
-                    //     justStop = 0
-                    //     if(destination_Node !=""){
-                    //         this.rc2(destination_Node) 
-                    //         //remove all the legit position's coloring
-                            
-                    //     }else{
-                    //         console.log("why this destination_Node is empty?")
-                    //         console.log("d.data.isLeaf:" + d.data.isLeaf )
-                    //         console.log("d.data.predictcolor:" + d.data.predictcolor)
-                    //         console.log("dragging" + dragging)
-                    //     }
-                    //     // console.log("justStop:" + justStop)
-                    // }
 
                     d3.selectAll("path")
                     .transition()
@@ -216,10 +190,6 @@ class Tree{
                         dragging = 0; //dragging ends
                         const { x, y } = d3.event
                         justStop = 1
-                        console.log('beginlabel:'+d.data.label) 
-                        console.log('darg end event destination_Node:'+destination_Node)
-                        
-                        
                         treemap.run(tree)
                     })
                     .on('drag', draged)

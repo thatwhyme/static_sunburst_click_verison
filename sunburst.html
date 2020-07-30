@@ -85,13 +85,17 @@
     <div id="div1" style="height:10%;"> 
         <p id = "sequencetxt" style="display:block;font-size:x-small"></p>
     </div>
-    <div id="div2" style="height:4%;text-align:center">
-        <tr>
-        <td><button  id="demo" style="width: 100px;height:50px;background-color: hsl(202, 73%, 48%);border-radius:10px;border:1px solid blue" onclick="UndoFunction()">Undo</button >
-        </td>
-        <td><div id = "NUM"></div></td>
-        </tr>
+    <div id="div2" style="height:4%;position:center;margin-left: 100px; margin-right: 150px">
+
+        <div align="middle" style="float:left">
+            <button  id="demo" style="width: 100px;height:50px;background-color: hsl(202, 73%, 48%);border-radius:10px;border:1px solid blue" onclick="UndoFunction()">Undo</button >
+        </div>
+        <div id = "NUM" align = "middle"></div>
+        <div align="middle" style="float:right">
+            <button  id="oneset" style="width: 100px;height:50px;background-color: hsl(160, 73%, 48%);border-radius:10px;border:1px solid rgb(0, 255, 64)" onclick="Oneset_Function()">OneSet</button >
+        </div>
     </div>
+
     <div id="body" style="height:100%;position:center">
         <svg id="partitionSVG"></svg>
     </div>

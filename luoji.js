@@ -49,8 +49,15 @@ let endLabel = 2 * beginLabel;
 
 let Recording = []; //This is used to record every step
 
+//important things
+//if you feel boring to click many nodes one by one, or you will play the same setting(for the red player)
+//many times, then you can set the labels in this redList, then you can just click the button "oneset".
+//but if you try to use this function, please set the value of Max_Choice_Num == redList.length
+let redList = [63,64,65,67,68,69,71,72,73,79,80,81,83,84,85,87,88,89,95,96,97,99,100,101,103,104,105] 
+
 // Math.floor(Math.pow(2,depth-1)*0.422)
-const Max_Choice_Num = 5 // this is a constraint which refers that the max num nodes that Red player can choose
+// const Max_Choice_Num == redList.length
+const Max_Choice_Num = 27 // this is a constraint which refers that the max num nodes that Red player can choose
 console.log("Max_Choice_Num: "+Max_Choice_Num)
 let cur_red_choice_num = 0  //the num of nodes that red player has chosen at this moment
 
@@ -368,7 +375,6 @@ function UndoFunction(d){
         unresolved = 0
         prepared = 0
         dragging = 0
-        console.log("destination_Node:"+destination_Node)
         destination_Node = ""
         console.log("destination_Node:"+destination_Node)
         console.log(Recording)
@@ -379,6 +385,36 @@ function UndoFunction(d){
     treemap.run(tree);
 }
 
-const treemap = new Tree(onlclick, onrclick,onrclick2,UndoFunction)  
+//help the red player to set all his options 
+function Oneset_Function(){
+    //It means that the red side has exhausted his options
+    if (FLAGPlayer == 1)  { 
+        return    
+    }
+    for(var i = 0; i < redList.length; i++){
+        console.log(redList[i])
+
+        //Find the corresponding red node according to redList[i], 
+        //and set its color attribute and phase attribute
+        findNodeTo (tree, redList[i]+"", node => {    // the label should be a string, so I make redList[i]+""
+            if (node.firstStage) return
+            node.firstStage = true
+            node.red_end = false
+            node.chosen = false
+            node.blue = false
+            node.normal = false
+        })
+        Recording.push("r:" + redList[i]) // recording the process
+        cur_red_choice_num += 1   // Represents the actual number of choices in the Red player
+    }
+
+    treemap.run(tree)
+
+    if (cur_red_choice_num == Max_Choice_Num){
+        FLAGPlayer = 1  // It's Blue's turn
+    }
+}
+
+const treemap = new Tree(onlclick, onrclick,onrclick2,UndoFunction,Oneset_Function)  
 treemap.run(tree)
 
