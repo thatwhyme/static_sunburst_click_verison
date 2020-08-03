@@ -1,0 +1,68 @@
+All the following bugs for static versioin has done.
+
+the bugs mentioned in emails:
+1 、
+All the static game versions you have sent me have a serious bug. When
+you try to move the red to a number which is smaller than it,
+something weird happens. It takes too long. Lets meet and talk about
+what you have done there, because I'm sure we can fix this bug. It
+should be as quick as the dynamic version.
+This problem appears both in the click and the drag version of the static game.
+
+//////////////////////////////////////////////////////////////////////
+2、
+actually may be you can fix it easily: it seems that when you drop to
+a smaller number, the colors are not updated until you move the mouse.
+So if you move to smaller label, the program waits for a movement of
+the mouse before it updates the colors and labels.
+
+Can you look at that? They should be updated immediately after the
+drop, just like it happens when you move to a larger label.
+
+the only static version that does not have this problem is the one
+with the Red list, where you set the red in advance.
+
+I don't know why.
+
+//////////////////////////////////////////////////////////////////////////////////
+3、
+
+I found a bug about the dummy area. Have a look at the screenshot.
+
+This is a tree of length 6. So, counting two levels at once, there are
+three levels where gray areas can start from: level 2, level 4 and
+level 6. But here they started from both level 3 and 4. So the one
+that starts at level 3, which appears at the top, it is the larger
+one, is wrong. It shouldn't appear. Because it corresponds to a
+subtree of length 4 that starts from level 1, which is an odd level,
+but we only care about the even levels.
+
+Do you know what I mean? The 3/4 rule only applies to four children
+that are on even levels (so their father is also on even level). The
+others don't count.
+
+/////////////////////////////////////////////////////////////////////
+4、
+in the static version with the click (you recently sent me that, no
+drag) there is a big bug. Basically after I choose the red, and I play
+my first blue move, it forgets all the remaining red....
+
+Can you please fix?
+
+//////////////////////////////////////////////////////////////////////////////
+
+fix all the bugs
+
+add another button: new game
+
+step1:
+click new game
+step2:
+reset the proportion
+step3:
+if you want to use the repeat button, you need to change redlist
+
+ 
+
+
+

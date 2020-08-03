@@ -2,17 +2,8 @@
 <html>
 <head>
 <meta charset="UTF-8">
-<!-- <script src="./d3.v5.min.js"></script> -->
 <script src="https://d3js.org/d3.v5.min.js"></script>
-<script src = "https://d3js.org/d3-drag.v1.min.js"></script>
-<script src="./d3-dispatch.v1.min.js"></script>
-<!-- <script src="./d3-selection.v1.min.js"></script> -->
-<script src="https://d3js.org/d3-selection.v1.min.js"></script>
-<script src="./d3-drag.v1.min.js"></script>
-<script src="https://d3js.org/d3-transition.v1.min.js"></script>
-<!-- <script src="./scriptnew.js"></script>
-<script src="./luoji.js"></script> -->
-<title>test</title>
+<title>static version click predict</title>
 <style>
     body, html, #body{
         width: 100%;
@@ -61,6 +52,43 @@
     }
 </style>
 
+<style>
+    .slidecontainer {
+      width: 69%;
+    }
+    .slider {
+      -webkit-appearance: none;
+      width: 100%;
+      height: 25px;
+      background: #d3d3d3;
+      outline: none;
+      opacity: 0.7;
+      -webkit-transition: .2s;
+      transition: opacity .2s;
+    }
+    
+    .slider:hover {
+      opacity: 1;
+    }
+    
+    .slider::-webkit-slider-thumb {
+      -webkit-appearance: none;
+      appearance: none;
+      width: 25px;
+      height: 25px;
+      background: #4CAF50;
+      cursor: pointer;
+    }
+    
+    .slider::-moz-range-thumb {
+      width: 25px;
+      height: 25px;
+      background: #4CAF50;
+      cursor: pointer;
+    }
+</style>
+
+
 <script>
     function fixedDiv(){
         var d1 = document.getElementById("div1");
@@ -75,9 +103,10 @@
     window.οnresize=function(){
         fixedDiv();
     }
-    </script>
+</script>
 
 </head>
+
 
 <body>
     <div class="arrow"> 
@@ -85,15 +114,28 @@
     <div id="div1" style="height:10%;"> 
         <p id = "sequencetxt" style="display:block;font-size:x-small"></p>
     </div>
-    <div id="div2" style="height:4%;position:center;margin-left: 100px; margin-right: 150px">
 
-        <div align="middle" style="float:left">
-            <button  id="demo" style="width: 100px;height:50px;background-color: hsl(202, 73%, 48%);border-radius:10px;border:1px solid blue" onclick="UndoFunction()">Undo</button >
+    <div id = "NUM" align = "middle" style="height:3%;"></div>
+    <div id="div2" style="height:2%;position:center;margin-left: 0; margin-right: 10px">
+        <div align="left" style="float:left">
+            <button  id="demo" style="width: 100px;height:50px;background-color: rgb(85, 179, 216);border-radius:10px;border:1px solid blueviolet" onclick="newGame()">New Game</button >
         </div>
-        <div id = "NUM" align = "middle"></div>
-        <div align="middle" style="float:right">
-            <button  id="oneset" style="width: 100px;height:50px;background-color: hsl(160, 73%, 48%);border-radius:10px;border:1px solid rgb(0, 255, 64)" onclick="Oneset_Function()">Repeat</button >
+        <!--  -->
+        <div align="right" >
+            <!-- style="float:right" -->
+            <button  id="oneset" style="width: 100px;height:50px;background-color: hsl(160, 73%, 48%);border-radius:10px;border:1px solid rgb(0, 255, 64)" onclick="Repeat()">Repeat</button >
         </div>
+    </div>
+
+    <!-- for the slider -->
+    <div class="slidecontainer" style="height:2%; position:center;margin-left: 230px; margin-right: 250px">
+        <input type="range" min="1" max="100" value="1" class="slider" id="myRange">
+        <p>Proportion: <span id="Proportion"></span></p>
+    </div>
+    <br><br>
+    <div align="right" style="height:5%; position:center; margin-right: 10px">
+        <!-- style="float:right" -->
+        <button  id="demo" style="width: 100px;height:50px;background-color: hsl(202, 73%, 48%);border-radius:10px;border:1px solid blue" onclick="UndoFunction()">Undo</button >
     </div>
 
     <div id="body" style="height:100%;position:center">
@@ -101,5 +143,21 @@
     </div>
     <script src="./scriptnew.js"></script>
     <script src="./luoji.js"></script>
+
+    <script>
+        var slider = document.getElementById("myRange");
+        var output = document.getElementById("Proportion");
+        output.innerHTML = slider.value + "%";
+        
+        slider.oninput = function() {
+            console.log("gameBegin:"+gameBegin)
+            if(gameBegin != 0) return
+            output.innerHTML = this.value + "%";
+            //here should change the text for red player
+            Max_Choice_Num = Math.floor(Math.pow(2,depth-1)*this.value/100)
+            filTxt()
+            console.log(output.innerHTML)
+        }
+    </script>
 </body>
 </html>

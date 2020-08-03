@@ -1,30 +1,35 @@
-You can 
-(1) change the variable 'Max_Choice_Num' in luoji.js file to set the most leaves that red player can choose.
-(2) change the variable 'depth' in luoji.js file to set the levels of the tree.
+How to play the game?
+Step1: select a suitable proportion for red player. The text will tell you how many nodes
+for the red player can choose.
+Step2: red player chooses n many nodes first.
+Step3: blue player try to move all the red nodes to legit positions
+step4: if you want to reset the proportion, please click New Game to start a new game.
 
-How to play this game？
-(1) First, the red palyer should choose Max_Choice_Num nodes as its strategy.  and these nodes will become red.
-(2) Second, the blue should do Max_Choice_Num rounds to resolve red player's strategy. In each round, the bule player should 
-click a red node first and then drag it to a legit position.( after you click the red node, it will become dark red. the legit positions
-will be highlighted with drak green color. Remember that you can only resolve the drak red node, then you can continue to resolve other red nodes.)
-
-Please keep the mouse within the scope of each node to avoid a lot of trouble.
-
-How to judge who wins the game?
-If the blue player can resolve all the Max_Choice_Num nodes, then the blue player wins, otherwise the red player wins.
+Notice: 
+(1) the Repeat Button can help red player reproduce the choices in the previous round.
+So if this is the first time you play the game, this Repeat Button will not work.
+Of course, if the player knows the code well, he can change the "redList" variable in luoji.js file.
+(2) the Undo Button can help any player to retreat one step.
 
 
+///////////////////////////////////////////////////////////////////////////////////
+some important variables:
 
+Max_Choice_Num: the most leaves that red player can choose.
 
+depth: the levels of the tree.
 
+FLAGPlayer:  0   means its red player's turn 
+             1   means its blue player's turn  
 
+cc：  0  means that blue player is gonna choose a red leaf node.
+      1  means that blue player has chosen a red leaf node, he is gonna choose a normal leaf node.
 
+cur_red_choice_num:  used to record how may nodes the red player has chosen until now.
 
+Recording: [] record all the steps
 
-
-
-
-
+redList： [] for Repeat function
 
 
 

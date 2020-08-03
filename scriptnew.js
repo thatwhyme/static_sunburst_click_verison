@@ -1,26 +1,19 @@
-let FLAGPlayer = 0  // who's turn   0 red player,   1 blue player
-// let cc = 0
-let dragging = 0  //It is used to indicate that dragging is in progress or not in progress. It is mainly used to control the lighting path operation.
-let prepared = 0
-let unresolved = 0  //Indicates that there are currently unfinished operations.
-let destination_Node = ""
-let justStop = 0
+let FLAGPlayer = 0
+let cc = 0
 var tooltip = d3.select("#body")
     .append("div")
     .attr("class", "tooltip")
-    .style("z-index", "10")
+    .style("z-index", "10")//10
     .style("opacity", 0)
 
-
 class Tree{
-    constructor(lc, rc, rc2,undo,oneset){
+    constructor(lc, rc){
         this.lc = lc.bind(this)
         this.rc = rc.bind(this)
-        this.rc2 = rc2.bind(this)
-        this.undo = undo.bind(this)
-        this.oneset = oneset.bind(this)
+        gameBegin = 0
     }
     run(tree){
+
         filTxt()
         const width = window.innerWidth;
 		const height = window.innerHeight / 2;
@@ -43,7 +36,6 @@ class Tree{
                     .size([2 * Math.PI, root.height + 1])
                     (root);
         };
-
         var data = tree
         const root = partition(data);
         
@@ -65,147 +57,75 @@ class Tree{
                 .join("path")
                 .attr("fill", getColor)
                 .attr("d", d => arc(d.current))
-                .on('click', d =>{  //Only the red side uses click, and the blue side uses the drag event.
-                    if(FLAGPlayer == 0){  // It means the round of Red Player
+                .on('click', d =>{  
+                    if(FLAGPlayer == 0){  //It is the red player's turn
                         if (d.data.isLeaf) {
                             this.lc(d)
                         }
                         d3.event.preventDefault()
-                    }else if(unresolved ==0 && FLAGPlayer == 1 && d.data.isLeaf && d.data.firstStage){//if (d.data.isLeaf && d.data.firstStage) 
-                        {
-                            d.data.chosen = true
-                            d.data.firstStage = false
-                            d.data.red_end = false
-                            d.data.blue = false
-                            d.data.normal = false
-                            // cc = 1 
-                            unresolved = 1
-                            prepared = 1
-                            redNowLabel = d.data.label
-
-                            Recording.push("b:r:" + redNowLabel);
-                            console.log(Recording) 
-
-                            // when you click the red node, then the legit positions for blue player
-                            // would be dark green
-                            for( var i = beginLabel; i < endLabel+1; i++ ){
-                                var label = ""+i;  //change the i to a string
-                                findNodeTo(tree, label, node => {
-                                    if(node.normal){
-                                        node.predictcolor = false
-                                        if(single.check(label,redNowLabel)){
-                                            node.predictcolor = true
-                                            node.normal = false
-                                        }
-                                    }
-                                })
-                            }
-                            treemap.run(tree)
+                    }else if(FLAGPlayer == 1 && cc == 0){ //It is the blue player's first step
+                        if (d.data.isLeaf) {
+                            this.rc(d)
                         }
+                        d3.event.preventDefault()
+                    }else if(FLAGPlayer == 1 && cc == 1){  //It is the blue player's second step
+                        if (d.data.isLeaf) {
+                            this.rc(d)
+                        }
+                        d3.event.preventDefault()
                     }
                 })
-                .on("mouseover", d => {
-                    if(d.data.isLeaf && d.data.predictcolor && dragging == 0 && justStop == 1){
-                        justStop = 0
-                        destination_Node = d.data.label
-                        //remove all the legit positions
-                        for(var i = beginLabel; i < endLabel+1; i++){
-                            var label = ""+i; //change the i to a string
-                            findNodeTo(tree, label, node => {
-                                if(node.predictcolor){
-                                    node.blue = false
-                                    node.firstStage = false
-                                    node.chosen = false
-                                    node.red_end = false
-                                    node.normal = true
-                                    node.predictcolor = false
-                                }
-                            })
-                        }
-                        this.rc2(destination_Node) 
-
-                    }
-
+                .on("mouseover", function(d) {
                     d3.selectAll("path")
                     .transition()
                     .duration(300)
                     .style("opacity", 1);
                     
-                    //Get this path
+                    //get the path
                     var sequenceArray = d.ancestors().reverse();
                     sequenceArray.shift(); 
                     
                     const arrowEle = document.getElementsByClassName('arrow')[0]
-                    arrowEle.innerHTML = sequenceArray
+                    arrowEle.innerHTML = sequenceArray//sdf
+                        //.map(i => `<div class="arrow-item" style="background-color:${getColor(i)};font-size:x-small;border-color:${getColor(i)};">${i.data.label.split('/')[0]}</div>`)
+                       // key1 show Double_labels in path.    we need not to split the i.data.label
                         .map(i => `<div class="arrow-item" style="background-color:${getColor(i)};font-size:x-small;border-color:${getColor(i)};">${i.data.label}</div>`)
                         .join('')
+					
                     svg.selectAll("path")
                     .filter(function(node) {
-
-                        if (dragging==0) {  
-                            return (sequenceArray.indexOf(node) >= 0)
-                        }
-                        else{  //Indicates that the dragging operation is in progress, so nodes that encounter non normal should not be lit up.
-                            let flg = node.data.chosen || node.data.firstStage|| node.data.red_end|| node.data.blue || !node.data.isLeaf
-                            if (flg) { //Indicates that it cannot be lit during dragging
-                                return false  
-                            }else{  //Indicates that it can be lit during dragging
-                                return true && (sequenceArray.indexOf(node) >= depth-2) 
-                            }
-                        }
-                    })
+                                return (sequenceArray.indexOf(node) >= 0);
+                            })
                     .transition()
                     .duration(300)
-                    .style("opacity", 0.7);
+                    .style("opacity", 0.8);
 
                     tooltip.html(d.data.label)
                     return tooltip.transition()
-                                    .duration(300)
-                                    .style("opacity",1)
-                })
+                      .duration(300)
+                      .style("opacity", 0.9)
+                  })
                 .on("mousemove", function(d) {
                     return tooltip
                     .transition()
                     .duration(300)
-                    .style("top", (d3.event.pageY+0)+"px")//+10
-                    .style("left", (d3.event.pageX+0)+"px");//+10
-                })
-                .call(
-                    d3.drag()  
-                    .filter(function(d) { // The filter function here ensures that only leaf nodes in firststage can be dragged
-                        if(d.data.chosen){
-                            return d.data.isLeaf
-                        }else{
-                            return false
-                        }
-                    })
-                    .on('start', (d) => {
-                        dragging = 1; //the dragging begins
-                        justStop = 0;
-                        const { x, y } = d3.event
-                        window.dx = 0;
-                        window.dy = 0;
-                    })
-                    .on('end', (d) => {
-                        dragging = 0; //dragging ends
-                        const { x, y } = d3.event
-                        justStop = 1
-                        treemap.run(tree)
-                    })
-                    .on('drag', draged)
-                )
-
+                      .style("top", (d3.event.pageY+0)+"px")//+10
+                      .style("left", (d3.event.pageX+0)+"px");//+10
+                  })
                 .on("mouseout", function(d){
                     var demoP=document.getElementById("sequencetxt");
                     demoP.innerHTML = "";
                     d3.selectAll("path")
-                    .transition()
-                    .duration(300)
-                    .style("opacity", 1);
-                    return tooltip.transition()
-                    .duration(300).style("opacity", 1);
-                })
-                  
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 1);
+                    return tooltip
+                        .transition()
+                        .duration(300)
+                        .style("opacity", 1);
+                  })
+               
+
         g.append("g")
                 .attr("pointer-events", "none")
                 .attr("text-anchor", "middle")
@@ -218,22 +138,11 @@ class Tree{
                 //key2 if you do not want to show the label on the disk, just comment out the following sentence
                 .text(d => d.data.label);
 
+
         function labelTransform(d) {
             const x = (d.x0 + d.x1) / 2 * 180 / Math.PI;
             const y = (d.y0 + d.y1) / 2 * radius;
             return `rotate(${x - 90}) translate(${y},0) rotate(${x < 180 ? 0 : 180})`;
-        }
-
-        function draged(d) {
-            // cx, cy
-            const { x, y, dx, dy, subject } = d3.event
-            window.dx += dx;
-            window.dy += dy;
-            // This gets the current position, and then gets the difference, which is the required translate x y value
-            d3.select(this)
-                .attr('cx', x)
-                .attr('cy', y)
-                .attr("transform", `translate(${window.dx},${window.dy})`);
         }
     }
 }
