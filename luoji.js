@@ -289,7 +289,7 @@ function findNodeTo(node, label, handle = () => {}) {  //find the node with the 
 
 // UndoFunction
 function UndoFunction(d){
-
+    if(Recording.length ==0 ) return
     console.log('click undo button')
     var tmp = Recording.pop()
     console.log(tmp)
@@ -385,12 +385,39 @@ function UndoFunction(d){
     treemap.run(tree);
 }
 
+function reDraw_Tree(node){
+    while(node){
+        node.normal = true
+        node.blue = false
+        node.chosen = false
+        node.firstStage = false
+        node.end = false
+        node.predictcolor = false
+        node.label = node.label.split('/')[0]
+        node = node.p
+    }
+}
+
 //help the red player to set all his options 
 function Oneset_Function(){
     //It means that the red side has exhausted his options
-    if (FLAGPlayer == 1)  { 
-        return    
+    
+    for(var i = beginLabel; i < endLabel+1; i++){
+        var label = ""+i; //change the i to a string
+        findNodeTo(tree, label, node => {
+            reDraw_Tree(node)
+        })
     }
+    
+    cur_red_choice_num = 0
+    FLAGPlayer = 0
+    Recording = []
+    // if(cur_red_choice_num != 0) return
+    // // location.reload();
+
+    // if (FLAGPlayer == 1)  { 
+    //     return    
+    // }
     for(var i = 0; i < redList.length; i++){
         console.log(redList[i])
 
